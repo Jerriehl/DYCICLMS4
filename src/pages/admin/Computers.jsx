@@ -123,8 +123,11 @@ function Computers() {
         labsApi.getAll()
       ]);
       
-      setComputers(computersRes.data);
-      setLabs(labsRes.data);
+      console.log('Computers API response:', computersRes);
+      console.log('Labs API response:', labsRes);
+      
+      setComputers(computersRes.data.data || []);
+      setLabs(labsRes.data.data || []);
     } catch (err) {
       console.error('Error fetching data:', err);
       setError('Failed to load computers. Please try again.');
@@ -244,6 +247,9 @@ function Computers() {
     );
   };
 
+  // Add safety check for computers array
+  const safeComputers = Array.isArray(computers) ? computers : [];
+
   const handleSelectAll = () => {
     if (selectedComputers.length === filteredComputers.length) {
       setSelectedComputers([]);
@@ -293,7 +299,7 @@ function Computers() {
   };
 
   // Filter computers based on search, lab, and status
-  const filteredComputers = computers.filter(comp => {
+  const filteredComputers = Array.isArray(computers) ? computers.filter(comp => {
     const matchesSearch = 
       comp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (comp.user && comp.user.toLowerCase().includes(searchTerm.toLowerCase())) ||
@@ -303,7 +309,7 @@ function Computers() {
     const matchesStatus = statusFilter === 'all' || comp.status === statusFilter;
     
     return matchesSearch && matchesLab && matchesStatus;
-  });
+  }) : [];
 
   const getStatusBadge = (status) => {
     const variants = {
@@ -441,9 +447,9 @@ function Computers() {
                 className="h-10 px-3 py-2 bg-white border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-[180px]"
               >
                 <option value="all">All Labs</option>
-                {labs.map(lab => (
+                {Array.isArray(labs) ? labs.map(lab => (
                   <option key={lab.id} value={lab.id}>{lab.name}</option>
-                ))}
+                )) : <option value="">No labs available</option>}
               </select>
             </div>
             <div className="flex items-center gap-2">
@@ -1047,7 +1053,7 @@ function Computers() {
               {/* Target Selection */}
               <h4 className="text-sm font-medium text-gray-700 mb-3">Select Target Computers</h4>
               <div className="space-y-2">
-                {computers
+                {safeComputers
                   .filter(c => c.id !== cloneModal.source.id && c.labId === cloneModal.source.labId)
                   .map((computer) => (
                     <label key={computer.id} className="flex items-center p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
@@ -1069,7 +1075,7 @@ function Computers() {
                   ))}
               </div>
               
-              {computers.filter(c => c.id !== cloneModal.source.id && c.labId === cloneModal.source.labId).length === 0 && (
+              {safeComputers.filter(c => c.id !== cloneModal.source.id && c.labId === cloneModal.source.labId).length === 0 && (
                 <div className="text-center py-4 text-gray-500">
                   <p>No other computers in this lab to clone to.</p>
                 </div>

@@ -122,8 +122,8 @@ function Laboratories() {
         usersApi.getAll('INSTRUCTOR')
       ]);
       
-      setLabs(labsRes.data);
-      setInstructors(instructorsRes.data);
+      setLabs(labsRes.data.data || []);
+      setInstructors(instructorsRes.data.data || []);
     } catch (err) {
       console.error('Error fetching data:', err);
       setError('Failed to load laboratories. Please try again.');
@@ -308,11 +308,11 @@ function Laboratories() {
   };
 
   // Filter labs based on search
-  const filteredLabs = labs.filter(lab => 
+  const filteredLabs = Array.isArray(labs) ? labs.filter(lab => 
     lab.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (lab.location && lab.location.toLowerCase().includes(searchTerm.toLowerCase())) ||
     (lab.assignedInstructor?.fullName && lab.assignedInstructor.fullName.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  ) : [];
 
   // Status badge helper
   const getStatusBadge = (status) => {
