@@ -116,7 +116,7 @@ const MessagingModule = ({ isOpen, onClose, userRole }) => {
     }
   }, []);
 
-  const loadConversations = async () => {
+ const loadConversations = async () => {
     try {
       setLoading(true);
       const data = await messagingService.getConversations();
