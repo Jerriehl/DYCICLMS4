@@ -25,6 +25,7 @@ const generateComputerName = (labName, seatNumber) => {
 // GET /api/labs - Return all laboratories
 router.get('/', async (req, res) => {
   try {
+    console.log('Labs API called');
     const labs = await prisma.laboratory.findMany({
       orderBy: {
         createdAt: 'desc'
@@ -70,7 +71,11 @@ router.get('/', async (req, res) => {
       scheduleSubjectCode: lab.scheduleSubjectCode
     }));
 
-    res.json(formattedLabs);
+    res.json({
+      success: true,
+      data: formattedLabs
+    });
+    console.log('Labs sent:', formattedLabs.length);
   } catch (error) {
     console.error('Error fetching labs:', error);
     res.status(500).json({ message: 'Failed to fetch laboratories' });

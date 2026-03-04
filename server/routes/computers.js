@@ -69,7 +69,10 @@ router.get('/', async (req, res) => {
       uptime: '-' // Will be populated by agent
     }));
 
-    res.json(formattedComputers);
+    res.json({
+      success: true,
+      data: formattedComputers
+    });
   } catch (error) {
     console.error('Error fetching computers:', error);
     res.status(500).json({ message: 'Failed to fetch computers' });

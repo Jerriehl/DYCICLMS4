@@ -3,6 +3,8 @@ import Login from './pages/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminLayout from './components/layout/AdminLayout';
 import Dashboard from './pages/admin/Dashboard';
+import UserManagement from './pages/admin/UserManagement';
+import ScheduleManagement from './pages/admin/ScheduleManagement';
 import Laboratories from './pages/admin/Laboratories';
 import Computers from './pages/admin/Computers';
 import NetworkControl from './pages/admin/NetworkControl';
@@ -41,6 +43,8 @@ function App() {
         >
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="users" element={<UserManagement />} />
+          <Route path="schedules" element={<ScheduleManagement />} />
           <Route path="laboratories" element={<Laboratories />} />
           <Route path="computers" element={<Computers />} />
           <Route path="network" element={<NetworkControl />} />

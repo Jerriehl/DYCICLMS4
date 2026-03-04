@@ -15,11 +15,15 @@ import {
   LogOut,
   ChevronRight,
   User,
-  MessageCircle
+  MessageCircle,
+  Users,
+  Calendar
 } from 'lucide-react';
 
 const navigation = [
   { name: 'Dashboard Overview', href: '/admin/dashboard', icon: LayoutDashboard },
+  { name: 'User Management', href: '/admin/users', icon: Users },
+  { name: 'Schedule Management', href: '/admin/schedules', icon: Calendar },
   { name: 'Laboratories Management', href: '/admin/laboratories', icon: Building2 },
   { name: 'Computers Panel', href: '/admin/computers', icon: Monitor },
   { name: 'Network Control', href: '/admin/network', icon: Network },

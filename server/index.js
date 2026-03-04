@@ -257,7 +257,6 @@ import usersRoutes from './routes/users.js';
 import computersRoutes from './routes/computers.js';
 import dashboardRoutes from './routes/dashboard.js';
 import messagingRoutes from './routes/messaging.js';
-
 app.use('/api/auth', authRoutes);
 app.use('/api/labs', labsRoutes);
 app.use('/api/users', usersRoutes);

@@ -19,7 +19,22 @@ import {
 import { mockStudentSession, mockAnnouncements } from '../../data/mockStudentData';
 
 function SessionDashboard() {
-  const [elapsedTime, setElapsedTime] = useState(mockStudentSession.timeElapsed);
+  // Get actual user data from localStorage
+  const [currentUser, setCurrentUser] = useState(() => {
+    const stored = localStorage.getItem('user');
+    return stored ? JSON.parse(stored) : null;
+  });
+  
+  const [sessionStartTime] = useState(() => {
+    // Store session start time when component mounts
+    const stored = sessionStorage.getItem('sessionStartTime');
+    if (stored) return new Date(stored);
+    const now = new Date();
+    sessionStorage.setItem('sessionStartTime', now.toISOString());
+    return now;
+  });
+  
+  const [elapsedTime, setElapsedTime] = useState('00:00:00');
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
   const [currentDate, setCurrentDate] = useState(new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
   const [showChat, setShowChat] = useState(false);
@@ -27,14 +42,30 @@ function SessionDashboard() {
   const [messageInput, setMessageInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Mock timer - increment seconds
+  // Timer - update elapsed time every second
   useEffect(() => {
+    const formatElapsedTime = (startTime) => {
+      const now = new Date();
+      const diff = now - startTime;
+      
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      
+      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    };
+    
     const timer = setInterval(() => {
       setCurrentTime(new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
       setCurrentDate(new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
-    }, 60000); // Update every minute
+      setElapsedTime(formatElapsedTime(sessionStartTime));
+    }, 1000); // Update every second
+    
+    // Initial calculation
+    setElapsedTime(formatElapsedTime(sessionStartTime));
+    
     return () => clearInterval(timer);
-  }, []);
+  }, [sessionStartTime]);
 
   // Mock chat data
   const mockChats = [
@@ -112,8 +143,8 @@ function SessionDashboard() {
             <User className="w-6 h-6 text-white" />
           </div>
           <div>
-            <p className="text-lg font-semibold text-gray-900">Welcome, {mockStudentSession.studentName}!</p>
-            <p className="text-sm text-gray-500">Your session started at {mockStudentSession.sessionStartTime} on {currentDate}</p>
+            <p className="text-lg font-semibold text-gray-900">Welcome, {currentUser?.fullName || currentUser?.username || 'Student'}!</p>
+            <p className="text-sm text-gray-500">Your session started at {sessionStartTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} on {currentDate}</p>
           </div>
         </div>
         <div className="flex items-center">
